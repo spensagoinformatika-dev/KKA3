@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petualangan Ular Tangga PAI Kelas VII</title>
+<style>
+:root{--green:#087f5b;--deep:#07543f;--mint:#d8f3e8;--gold:#ffc857;--blue:#3b82f6;--red:#ef476f;--ink:#18352d;--paper:#f4fbf7}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#e7f8ef,#f7fbff);min-height:100vh}
+button,input,select{font:inherit}button{border:0;border-radius:12px;padding:11px 16px;font-weight:750;cursor:pointer;transition:.18s}button:hover{transform:translateY(-1px);filter:brightness(1.04)}button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.primary{background:var(--green);color:white}.secondary{background:#e4f4ec;color:var(--deep)}.gold{background:var(--gold);color:#543b00}.danger{background:#ffe1e7;color:#9f1239}
+header{background:linear-gradient(110deg,#07543f,#0b8f67);color:white;padding:20px 16px;text-align:center;box-shadow:0 5px 20px #07543f25}
+header h1{margin:0;font-size:clamp(1.45rem,4vw,2.35rem);letter-spacing:.3px}header p{margin:5px 0 0;color:#d9f8e9}
+main{max-width:1200px;margin:22px auto;padding:0 14px 36px}
+.panel{background:white;border:1px solid #dceee5;border-radius:20px;padding:20px;box-shadow:0 10px 30px #174b3510}
+.hidden{display:none!important}.hero{text-align:center;padding:35px 20px;background:radial-gradient(circle at 15% 20%,#fff3c4,transparent 30%),linear-gradient(135deg,#fff,#e4f8ed)}
+.hero .emoji{font-size:4rem}.hero h2{font-size:clamp(1.6rem,4vw,2.4rem);margin:8px 0;color:var(--deep)}.hero p{max-width:650px;margin:0 auto 18px;line-height:1.6}
+.formrow{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0}.formrow input,.formrow select{padding:11px 13px;border:1px solid #b9d8c9;border-radius:12px;min-width:190px;background:#fff}
+.actions{display:flex;gap:9px;justify-content:center;flex-wrap:wrap}
+.game-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(270px,.8fr);gap:16px;align-items:start}
+.board-wrap{padding:12px}.board{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:3px;position:relative;aspect-ratio:1/1;background:#d5e9df;border-radius:13px;padding:4px;overflow:hidden}
+.cell{position:relative;min-width:0;display:flex;align-items:flex-start;justify-content:space-between;padding:4px;border-radius:5px;background:#e9f7ef;font-size:clamp(8px,1.3vw,13px);font-weight:800;border:1px solid #c8e4d5}
+.cell:nth-child(4n+1){background:#fff4cf}.cell:nth-child(4n+2){background:#e0f2fe}.cell:nth-child(4n+3){background:#e7f8e9}
+.cell .special{font-size:clamp(8px,1.2vw,12px);align-self:end}.cell.start{background:#b7f7d2}.cell.finish{background:#ffe08a}
+.cell .tokens{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);display:flex;gap:2px}
+.token{width:clamp(10px,1.7vw,18px);height:clamp(10px,1.7vw,18px);border-radius:50%;border:2px solid white;box-shadow:0 1px 4px #0005}
+.token.p1{background:#2563eb}.token.p2{background:#e11d48}
+.cell .num{z-index:1}
+.board-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.83rem;color:#49665a;margin:10px 2px 0}
+.side{display:grid;gap:12px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.stat{background:#f0faf4;border-radius:13px;padding:11px}.stat small{display:block;color:#5d766b}.stat strong{font-size:1.25rem;color:var(--deep)}
+.dicebox{text-align:center;background:#f7fbf8}.dice{font-size:3.5rem;width:88px;height:88px;margin:8px auto;display:grid;place-items:center;background:white;border:2px solid #cde8d8;border-radius:20px;box-shadow:0 5px 14px #0b51351a}
+.turn{font-weight:800;color:var(--deep);margin:4px}.hint{font-size:.9rem;color:#5c7369;line-height:1.45}
+.modal-backdrop{position:fixed;inset:0;background:#082d22a8;display:grid;place-items:center;padding:15px;z-index:10}
+.modal{width:min(600px,100%);max-height:90vh;overflow:auto;background:white;border-radius:20px;padding:22px;box-shadow:0 20px 70px #0004}
+.modal h3{margin:0 0 8px;color:var(--deep);font-size:1.35rem}.question{font-size:1.08rem;font-weight:750;line-height:1.5;margin:15px 0}
+.answers{display:grid;gap:9px}.answer{background:#f0f7f3;color:#21483a;text-align:left;border:1px solid #d4e8dc}.answer.correct{background:#d7f8e5;border:1px solid #38a169}.answer.wrong{background:#ffe2e8;border:1px solid #e56b82}
+.feedback{padding:12px;border-radius:12px;margin:12px 0;background:#f1f8f4;line-height:1.5}.feedback.good{background:#dcfce7}.feedback.bad{background:#fff0f2}
+.modal-footer{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:15px}
+.scoreline{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}.scoreline span{font-size:.9rem}
+ol,ul{line-height:1.65}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#123d30;color:white;padding:12px 18px;border-radius:13px;z-index:20;box-shadow:0 6px 25px #0003;max-width:90vw;text-align:center}
+@media(max-width:850px){.game-layout{grid-template-columns:1fr}.side{grid-template-columns:repeat(2,minmax(0,1fr))}.side .full{grid-column:1/-1}}
+@media(max-width:520px){main{margin:12px auto}.panel{padding:13px}.side{grid-template-columns:1fr 1fr}.dice{width:70px;height:70px;font-size:2.8rem}.cell{padding:2px}.board{gap:2px;padding:3px}.board-legend{font-size:.75rem}}
+</style>
+</head>
+<body>
+<header><h1>🌙 PETUALANGAN ULAR TANGGA PAI</h1><p>Belajar Agama Islam Sambil Bermain · Kelas VII SMP/MTs</p></header>
+<main>
+<section id="home" class="panel hero">
+ <div class="emoji">🕌 🎲 🐍</div><h2>Siap Memulai Petualangan Islami?</h2>
+ <p>Jelajahi 100 kotak, jawab tantangan PAI, kumpulkan poin, dan jadilah pemenang. Semangat belajar dan bermain dengan sportif!</p>
+ <div class="formrow"><input id="name1" maxlength="22" placeholder="Nama pemain 1" value="Pemain 1"><input id="name2" maxlength="22" placeholder="Nama pemain 2 (mode 2 pemain)" value="Pemain 2"></div>
+ <div class="formrow"><select id="mode"><option value="1">Mode 1 Pemain</option><option value="2">Mode 2 Pemain</option></select></div>
+ <div class="actions"><button class="primary" id="startBtn">▶ MULAI BERMAIN</button><button class="secondary" id="guideBtn">📖 PETUNJUK</button><button class="secondary" id="goalBtn">🎯 TUJUAN PEMBELAJARAN</button></div>
+ <p class="hint" style="margin-top:16px">Materi: Al-Qur'an dan Hadis, Akidah, Akhlak, Fikih, serta Sejarah Peradaban Islam.</p>
+</section>
+<section id="game" class="hidden">
+ <div class="game-layout">
+  <div class="panel board-wrap"><div class="scoreline"><strong>🧭 Papan Petualangan</strong><span id="statusTop">Giliran pemain 1</span></div><div id="board" class="board" aria-label="Papan ular tangga 100 kotak"></div><div class="board-legend"><span>🔵 Pemain 1</span><span>🔴 Pemain 2</span><span>🪜 Tangga</span><span>🐍 Ular</span><span>❓ Kuis</span></div></div>
+  <aside class="side">
+   <div class="panel dicebox full"><div class="turn" id="turnName">Giliran: Pemain 1</div><div class="dice" id="dice">🎲</div><button class="primary" id="rollBtn">LEMPAR DADU</button><p class="hint" id="diceHint">Tekan tombol untuk melempar dadu.</p></div>
+   <div class="panel"><strong>📊 Skor Pemain 1</strong><div class="stats"><div class="stat"><small>Skor</small><strong id="score1">0</strong></div><div class="stat"><small>Posisi</small><strong id="pos1">1</strong></div><div class="stat"><small>Benar</small><strong id="correct1">0</strong></div><div class="stat"><small>Salah</small><strong id="wrong1">0</strong></div></div></div>
+   <div class="panel" id="p2panel"><strong>📊 Skor Pemain 2</strong><div class="stats"><div class="stat"><small>Skor</small><strong id="score2">0</strong></div><div class="stat"><small>Posisi</small><strong id="pos2">1</strong></div><div class="stat"><small>Benar</small><strong id="correct2">0</strong></div><div class="stat"><small>Salah</small><strong id="wrong2">0</strong></div></div></div>
+   <div class="panel full"><strong>✨ Misi Permainan</strong><p class="hint">Berhenti di kotak kuis untuk menjawab pertanyaan. Jawaban benar mendapat poin. Tangga memberi bonus, sedangkan ular membuatmu turun.</p><div class="actions"><button class="secondary" id="soundBtn">🔊 Suara: ON</button><button class="secondary" id="musicBtn">🎵 Musik: OFF</button><button class="danger" id="restartBtn">↻ Mulai Ulang</button><button class="secondary" id="menuBtn">⌂ Menu</button></div></div>
+  </aside>
+ </div>
+</section>
+<section id="result" class="panel hidden" style="text-align:center;margin-top:18px">
+ <div style="font-size:4rem">🏆🎉</div><h2 id="winnerTitle">Selamat!</h2><p id="winnerText"></p><div id="resultDetails"></div>
+ <div class="actions" style="margin-top:18px"><button class="primary" id="playAgain">MAIN LAGI</button><button class="secondary" id="viewResults">LIHAT HASIL</button><button class="secondary" id="backMenu">KEMBALI KE MENU</button></div>
+</section>
+</main>
+<div id="modalRoot"></div><div id="toast" class="toast hidden"></div>
+<script>
+const ladders={4:14,9:31,21:42,28:84,51:67,72:91};
+const snakes={17:7,54:34,62:19,64:60,87:24,95:75,99:78};
+const bonusSquares=[13,36,58,80],wisdomSquares=[25,47,69,93],moveForward=[39],moveBack=[76];
+const questions=[
+["Al-Qur'an diturunkan kepada Nabi Muhammad saw. melalui malaikat ....",["Jibril","Mikail","Israfil","Izrail"],0,"Malaikat Jibril menyampaikan wahyu Allah Swt. kepada para nabi dan rasul."],
+["Al-Qur'an berfungsi sebagai .... bagi manusia.",["Hiasan rumah","Pedoman hidup","Buku sejarah saja","Pengganti hadis"],1,"Al-Qur'an menjadi petunjuk bagi manusia dalam menjalani kehidupan."],
+["Kandungan utama Q.S. Al-Mujadilah ayat 11 antara lain Allah mengangkat derajat orang yang ....",["Kaya raya","Memiliki jabatan","Beriman dan berilmu","Terkenal"],2,"Ayat tersebut menjelaskan keutamaan iman dan ilmu."],
+["Perintah dalam Q.S. Ar-Rahman ayat 33 mendorong manusia untuk ....",["Berdiam diri","Menjelajahi penjuru langit dan bumi dengan kemampuan","Meninggalkan ilmu","Bersikap sombong"],1,"Ayat ini mengajak manusia memperhatikan kemampuan dan kekuasaan Allah."],
+["Jumlah rukun iman adalah ....",["Empat","Lima","Enam","Tujuh"],2,"Rukun iman berjumlah enam."],
+["Percaya bahwa Allah Maha Esa termasuk iman kepada ....",["Kitab","Allah","Malaikat","Hari akhir"],1,"Iman kepada Allah berarti meyakini Allah sebagai satu-satunya Tuhan."],
+["Asmaulhusna berarti ....",["Nama-nama nabi","Nama-nama malaikat","Nama-nama Allah yang indah","Nama kitab"],2,"Asmaulhusna adalah nama-nama Allah yang indah dan baik."],
+["Al-'Alim memiliki arti Allah Maha ....",["Mengetahui","Pengampun","Adil","Mendengar"],0,"Al-'Alim berarti Maha Mengetahui segala sesuatu."],
+["Malaikat yang bertugas menyampaikan wahyu adalah ....",["Mikail","Jibril","Israfil","Ridwan"],1,"Malaikat Jibril bertugas menyampaikan wahyu."],
+["Malaikat yang bertugas meniup sangkakala adalah ....",["Israfil","Munkar","Nakir","Atid"],0,"Malaikat Israfil bertugas meniup sangkakala atas perintah Allah."],
+["Iman kepada hari akhir merupakan rukun iman ke- ....",["Dua","Tiga","Empat","Lima"],3,"Hari akhir adalah rukun iman kelima."],
+["Sikap jujur berarti ....",["Berkata sesuai kenyataan","Menyembunyikan kebenaran","Menyalahkan teman","Berpura-pura"],0,"Jujur berarti berkata dan bertindak sesuai kebenaran."],
+["Menjaga titipan teman merupakan contoh perilaku ....",["Takabur","Amanah","Hasad","Riya"],1,"Amanah berarti dapat dipercaya dan menjaga tanggung jawab."],
+["Ketika guru menjelaskan pelajaran, sikap yang tepat adalah ....",["Mengobrol","Tidur","Mendengarkan dengan baik","Mengejek"],2,"Menghormati guru dilakukan dengan memperhatikan dan mengikuti pembelajaran."],
+["Contoh berbakti kepada orang tua adalah ....",["Membentak","Membantu dan berbicara santun","Mengabaikan nasihat","Berbohong"],1,"Berbakti dapat dilakukan dengan menaati nasihat yang baik dan bertutur santun."],
+["Toleransi berarti ....",["Memaksakan pendapat","Menghargai perbedaan","Menghina keyakinan lain","Menjauhi semua orang"],1,"Toleransi adalah sikap menghargai perbedaan tanpa mengganggu orang lain."],
+["Menjaga kebersihan merupakan bagian dari ....",["Keimanan dan akhlak terpuji","Kesombongan","Pemborosan","Permusuhan"],0,"Islam mengajarkan kebersihan diri dan lingkungan."],
+["Jika menemukan sampah di halaman sekolah, sebaiknya ....",["Membiarkannya","Menendangnya","Memungut dan membuang ke tempat sampah","Menyalahkan teman"],2,"Menjaga lingkungan adalah tanggung jawab bersama."],
+["Taharah artinya ....",["Bersuci","Berdagang","Berpuasa","Berperang"],0,"Taharah adalah bersuci dari hadas dan najis."],
+["Bersuci dari hadas kecil dilakukan dengan ....",["Mandi wajib","Wudu","Istinja saja","Mencuci pakaian"],1,"Wudu merupakan cara bersuci dari hadas kecil."],
+["Salah satu rukun wudu adalah ....",["Membaca buku","Membasuh wajah","Memakai wewangian","Mengeringkan rambut"],1,"Membasuh wajah termasuk rukun wudu."],
+["Salat wajib dalam sehari semalam berjumlah ....",["Tiga waktu","Empat waktu","Lima waktu","Enam waktu"],2,"Salat wajib terdiri dari Subuh, Zuhur, Asar, Magrib, dan Isya."],
+["Salat yang terdiri dari dua rakaat adalah ....",["Zuhur","Asar","Subuh","Isya"],2,"Salat Subuh terdiri dari dua rakaat."],
+["Arah yang dituju umat Islam ketika salat adalah ....",["Matahari terbit","Ka'bah","Gunung","Masjid terdekat"],1,"Umat Islam menghadap kiblat, yaitu arah Ka'bah."],
+["Najis mukhaffafah disebut juga najis ....",["Berat","Sedang","Ringan","Tidak ada"],2,"Mukhaffafah berarti najis ringan."],
+["Cara menyucikan najis mughallazah adalah membasuh tujuh kali, salah satunya dengan ....",["Air gula","Air bercampur tanah","Minyak","Air teh"],1,"Najis berat disucikan tujuh kali dan salah satunya menggunakan tanah atau debu yang suci."],
+["Nabi Muhammad saw. lahir di kota ....",["Madinah","Makkah","Taif","Yerusalem"],1,"Nabi Muhammad saw. lahir di Makkah."],
+["Gelar Al-Amin yang diberikan kepada Nabi Muhammad saw. berarti ....",["Pemberani","Dapat dipercaya","Cerdas","Penyayang"],1,"Al-Amin berarti orang yang terpercaya."],
+["Wahyu pertama diterima Nabi Muhammad saw. di ....",["Gua Hira","Gua Tsur","Masjid Nabawi","Padang Arafah"],0,"Wahyu pertama turun di Gua Hira melalui Surah Al-'Alaq ayat 1–5."],
+["Peristiwa hijrah Nabi Muhammad saw. adalah perjalanan dari ....",["Madinah ke Makkah","Makkah ke Madinah","Taif ke Syam","Makkah ke Yaman"],1,"Hijrah dilakukan dari Makkah menuju Madinah."],
+["Sifat wajib rasul yang berarti benar adalah ....",["Amanah","Tablig","Fatanah","Siddiq"],3,"Siddiq berarti benar atau jujur."],
+["Sifat rasul yang berarti menyampaikan adalah ....",["Tablig","Amanah","Siddiq","Fatanah"],0,"Tablig berarti menyampaikan wahyu Allah kepada umat."],
+["Kitab Taurat diturunkan kepada Nabi ....",["Isa","Musa","Daud","Ibrahim"],1,"Kitab Taurat diturunkan kepada Nabi Musa a.s."],
+["Kitab Injil diturunkan kepada Nabi ....",["Isa","Musa","Muhammad","Nuh"],0,"Kitab Injil diturunkan kepada Nabi Isa a.s."],
+["Malaikat yang mencatat amal baik adalah ....",["Atid","Raqib","Malik","Munkar"],1,"Malaikat Raqib mencatat amal baik, sedangkan Atid mencatat amal buruk."],
+["Ketika mendapat nikmat, seorang muslim dianjurkan ....",["Mengeluh","Bersyukur","Sombong","Pamer"],1,"Bersyukur dilakukan dengan hati, lisan, dan perbuatan."],
+["Sikap rendah hati disebut ....",["Tawaduk","Takabur","Hasad","Riya"],0,"Tawaduk adalah sikap tidak sombong."],
+["Sebelum makan, seorang muslim dianjurkan membaca ....",["Basmalah","Istigfar panjang","Talbiyah","Azan"],0,"Membaca basmalah merupakan adab sebelum makan."],
+["Puasa wajib bagi umat Islam dilaksanakan pada bulan ....",["Syawal","Ramadan","Safar","Muharam"],1,"Puasa Ramadan merupakan salah satu rukun Islam."],
+["Rukun Islam yang pertama adalah ....",["Salat","Zakat","Syahadat","Puasa"],2,"Syahadat merupakan rukun Islam pertama."],
+["Zakat fitrah ditunaikan pada bulan ....",["Ramadan menjelang Idulfitri","Safar","Rabiulawal","Zulkaidah"],0,"Zakat fitrah ditunaikan pada bulan Ramadan sebelum salat Idulfitri."],
+["Perilaku yang mencerminkan kasih sayang adalah ....",["Membantu teman yang kesulitan","Mengejek teman","Menyebarkan rahasia","Mengucilkan orang"],0,"Menolong orang lain merupakan akhlak terpuji."],
+["Jika melakukan kesalahan, sebaiknya kita ....",["Menyalahkan orang lain","Meminta maaf dan memperbaiki diri","Berbohong","Melarikan diri"],1,"Mengakui kesalahan dan memperbaikinya adalah sikap bertanggung jawab."],
+["Tujuan utama mempelajari sejarah nabi adalah ....",["Sekadar menghafal tahun","Mengambil teladan dari perjuangannya","Mencari kekayaan","Membandingkan suku"],1,"Sejarah nabi memberi pelajaran dan teladan dalam kehidupan."]
+];
+let players=[],turn=0,mode=1,deck=[],answered=0,rolling=false,soundOn=true,musicOn=false,musicTimer=null,audioCtx=null,questionState=null,gameOver=false;
+const $=id=>document.getElementById(id);
+const diceFaces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");setTimeout(()=>$("toast").classList.add("hidden"),2300)}
+function beep(freq=600,duration=.12){if(!soundOn)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();let o=audioCtx.createOscillator(),g=audioCtx.createGain();o.connect(g);g.connect(audioCtx.destination);o.frequency.value=freq;g.gain.value=.07;o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);o.stop(audioCtx.currentTime+duration)}catch(e){}}
+function showInfo(title,body){$("modalRoot").innerHTML=`<div class="modal-backdrop" id="backdrop"><div class="modal"><h3>${title}</h3><div>${body}</div><div class="modal-footer"><button class="primary" id="closeInfo">Tutup</button></div></div></div>`;$("closeInfo").onclick=()=>$("modalRoot").innerHTML="";$("backdrop").onclick=e=>{if(e.target.id==="backdrop")$("modalRoot").innerHTML=""}}
+function startGame(){mode=+$("mode").value;players=[{name:$("name1").value.trim()||"Pemain 1",pos:1,score:0,correct:0,wrong:0,attempts:0},{name:$("name2").value.trim()||"Pemain 2",pos:1,score:0,correct:0,wrong:0,attempts:0}];turn=0;deck=shuffle(questions.map((q,i)=>i));answered=0;gameOver=false;rolling=false;$("home").classList.add("hidden");$("result").classList.add("hidden");$("game").classList.remove("hidden");$("p2panel").classList.toggle("hidden",mode===1);$("dice").textContent="🎲";$("diceHint").textContent="Tekan tombol untuk melempar dadu.";render();updateStats();$("rollBtn").disabled=false;saveGame()}
+function boardNumberAt(row,col){return row%2===0?row*10+(col+1):(row+1)*10-col}
+function render(){let b=$("board");b.innerHTML="";for(let row=9;row>=0;row--){for(let col=0;col<10;col++){let n=boardNumberAt(row,col),cell=document.createElement("div");cell.className="cell"+(n===1?" start":"")+(n===100?" finish":"");let symbol="";if(ladders[n])symbol="🪜";else if(snakes[n])symbol="🐍";else if(bonusSquares.includes(n))symbol="⭐";else if(wisdomSquares.includes(n))symbol="💡";else if(moveForward.includes(n)||moveBack.includes(n))symbol="🎯";else if(n%5===0)symbol="❓";cell.innerHTML=`<span class="num">${n}</span><span class="special">${symbol}</span><div class="tokens"></div>`;players.forEach((p,i)=>{if(p.pos===n){let t=document.createElement("span");t.className="token "+(i===0?"p1":"p2");t.title=p.name;cell.querySelector(".tokens").appendChild(t)}});b.appendChild(cell)}}$("turnName").textContent="Giliran: "+players[turn].name;$("statusTop").textContent=players[turn].name+" bermain"}
+function updateStats(){players.forEach((p,i)=>{let k=i+1;$("score"+k).textContent=p.score;$("pos"+k).textContent=p.pos;$("correct"+k).textContent=p.correct;$("wrong"+k).textContent=p.wrong})}
+function saveGame(){try{localStorage.setItem("ularTanggaPAI_kelas7",JSON.stringify({players,turn,mode,deck,answered}))}catch(e){}}
+function nextTurn(){if(gameOver)return;if(mode===2)turn=1-turn;else turn=0;render();$("rollBtn").disabled=false;$("diceHint").textContent="Giliran "+players[turn].name+". Lempar dadu!";saveGame()}
+async function rollDice(){if(rolling||gameOver)return;rolling=true;$("rollBtn").disabled=true;let roll=Math.floor(Math.random()*6)+1;for(let i=0;i<8;i++){ $("dice").textContent=diceFaces[Math.floor(Math.random()*6)];await new Promise(r=>setTimeout(r,65))}$("dice").textContent=diceFaces[roll-1];beep(440+roll*70,.18);let p=players[turn],target=p.pos+roll;if(target>100){$("diceHint").textContent="Angka dadu harus tepat untuk mencapai kotak 100. Posisi tetap.";rolling=false;setTimeout(nextTurn,900);return}let start=p.pos;for(let n=start+1;n<=target;n++){p.pos=n;render();await new Promise(r=>setTimeout(r,105))}let landed=p.pos;$("diceHint").textContent=p.name+" berhenti di kotak "+landed+".";rolling=false;updateStats();saveGame();await resolveSquare(landed);if(!gameOver&&questionState===null){if(p.pos===100){finishGame(turn);return}setTimeout(nextTurn,650)}}
+async function resolveSquare(n){let p=players[turn];if(ladders[n]){await delay(400);p.pos=ladders[n];p.score+=25;render();updateStats();toast("Alhamdulillah! Naik tangga ke kotak "+p.pos+". Bonus 25 poin!");beep(800)}else if(snakes[n]){await delay(400);p.pos=snakes[n];render();toast("Ups, terkena ular! Turun ke kotak "+p.pos+". Tetap semangat!");beep(240)}else if(bonusSquares.includes(n)){p.score+=50;toast("Kotak keberuntungan! +50 poin.");beep(900)}else if(wisdomSquares.includes(n)){let wisdom=["Menuntut ilmu adalah jalan menuju kebaikan.","Kejujuran adalah pangkal kepercayaan.","Hormati orang tua dan guru.","Kebersihan adalah bagian dari iman.","Sebaik-baik manusia adalah yang bermanfaat bagi sesama."];showInfo("💡 Hikmah Islami",`<p>${wisdom[(n+players[turn].correct)%wisdom.length]}</p>`)}else if(moveForward.includes(n)){p.pos=Math.min(100,p.pos+3);render();toast("Maju 3 langkah!");}else if(moveBack.includes(n)){p.pos=Math.max(1,p.pos-2);render();toast("Mundur 2 langkah. Jangan menyerah!");}
+if(p.pos===100){finishGame(turn);return}
+if(n%5===0||n===3||n===8||n===12||n===18||n===23||n===27||n===33||n===41||n===46||n===52||n===57||n===63||n===68||n===74||n===79||n===83||n===88||n===94){await askQuestion(n===88||n===94)}
+updateStats();saveGame()}
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+function askQuestion(hard=false){return new Promise(resolve=>{if(deck.length===0)deck=shuffle(questions.map((q,i)=>i));let idx=deck.pop(),q=questions[idx],attempt=0,closed=false;questionState={resolve};const renderQ=()=>{$("modalRoot").innerHTML=`<div class="modal-backdrop"><div class="modal"><div class="scoreline"><strong>❓ Tantangan PAI ${hard?"· Tantangan":"· Kuis"}</strong><span>Kesempatan: ${attempt}/3</span></div><div class="question">${q[0]}</div><div class="answers">${q[1].map((a,i)=>`<button class="answer" data-answer="${i}">${"ABCD"[i]}. ${a}</button>`).join("")}</div><div id="feedback"></div><div class="modal-footer"><span class="hint">Jawab dengan teliti. Kamu punya 3 kesempatan.</span><button id="continueQ" class="primary hidden">Lanjutkan</button></div></div></div>`;document.querySelectorAll("[data-answer]").forEach(btn=>btn.onclick=()=>{if(closed)return;let choice=+btn.dataset.answer;attempt++;players[turn].attempts++;let feedback=$("feedback");document.querySelectorAll(".answer").forEach(x=>x.disabled=true);if(choice===q[2]){closed=true;let pts=attempt===1?100:attempt===2?75:50;players[turn].score+=pts;players[turn].correct++;feedback.className="feedback good";feedback.innerHTML=`<strong>Hebat! Jawaban kamu benar. Teruskan petualanganmu!</strong><br>+${pts} poin.<br><b>Pembahasan:</b> ${q[3]}`;beep(880);$("continueQ").classList.remove("hidden")}else{players[turn].wrong++;beep(260);feedback.className="feedback bad";if(attempt>=3){closed=true;feedback.innerHTML=`<strong>Kesempatan habis.</strong> Jawaban yang benar: <b>${"ABCD"[q[2]]}. ${q[1][q[2]]}</b><br><b>Pembahasan:</b> ${q[3]}<br>Tetap semangat, permainan dilanjutkan!`;$("continueQ").classList.remove("hidden")}else{feedback.innerHTML=`<strong>Belum tepat!</strong> Tetap semangat belajar dan coba lagi pada soal berikutnya. Kesempatan tersisa ${3-attempt}.`;setTimeout(()=>document.querySelectorAll(".answer").forEach(x=>x.disabled=false),650)}};updateStats();saveGame()});$("continueQ").onclick=()=>{if(!closed)return;$("modalRoot").innerHTML="";questionState=null;resolve();};};renderQ()})}
+function finishGame(winner){gameOver=true;$("rollBtn").disabled=true;let p=players[winner],total=p.correct+p.wrong,pct=total?Math.round(p.correct/total*100):0,pred=pct>=90?"Sangat Baik":pct>=80?"Baik":pct>=70?"Cukup":"Perlu Belajar Lagi";$("winnerTitle").textContent="🏆 Selamat, "+p.name+"!";$("winnerText").textContent=mode===2?"Kamu mencapai kotak 100 dan memenangkan permainan!":"Kamu berhasil menyelesaikan petualangan sampai kotak 100!";$("resultDetails").innerHTML=`<div class="stats" style="max-width:600px;margin:18px auto"><div class="stat"><small>Total skor</small><strong>${p.score}</strong></div><div class="stat"><small>Posisi akhir</small><strong>${p.pos}</strong></div><div class="stat"><small>Jawaban benar</small><strong>${p.correct}</strong></div><div class="stat"><small>Jawaban salah</small><strong>${p.wrong}</strong></div><div class="stat"><small>Ketuntasan</small><strong>${pct}%</strong></div><div class="stat"><small>Predikat</small><strong style="font-size:1rem">${pred}</strong></div></div>`;$("result").classList.remove("hidden");$("result").scrollIntoView({behavior:"smooth"});beep(1000,.35);try{localStorage.setItem("ularTanggaPAI_hasilTerakhir",JSON.stringify({name:p.name,score:p.score,correct:p.correct,wrong:p.wrong,pct,pred,date:new Date().toLocaleString("id-ID")}))}catch(e){}}
+$("startBtn").onclick=startGame;$("rollBtn").onclick=rollDice;
+$("guideBtn").onclick=()=>showInfo("📖 Petunjuk Permainan",`<ol><li>Masukkan nama pemain dan pilih mode 1 atau 2 pemain.</li><li>Tekan <b>Lempar Dadu</b>, lalu bidak bergerak sesuai angka dadu.</li><li>Berhenti di kotak kuis untuk menjawab pertanyaan PAI.</li><li>Setiap soal memiliki maksimal 3 kesempatan. Jika tiga kali salah, jawaban dan pembahasan ditampilkan, lalu permainan berlanjut.</li><li>Naik tangga mendapat bonus 25 poin; kotak bonus mendapat 50 poin.</li><li>Untuk mencapai kotak 100, angka dadu harus tepat.</li></ol><p>Pada mode 2 pemain, pemain bergiliran. Pemain pertama yang mencapai kotak 100 menang.</p>`);
+$("goalBtn").onclick=()=>showInfo("🎯 Tujuan Pembelajaran",`<ul><li>Memahami Al-Qur'an dan hadis sebagai pedoman hidup.</li><li>Mengenal rukun iman, Asmaulhusna, dan tugas malaikat.</li><li>Membiasakan perilaku jujur, amanah, santun, toleran, dan peduli lingkungan.</li><li>Memahami taharah, wudu, najis, dan salat wajib.</li><li>Meneladani akhlak dan perjuangan Nabi Muhammad saw.</li></ul>`);
+$("restartBtn").onclick=()=>{if(confirm("Mulai ulang permainan dari awal?"))startGame()};$("menuBtn").onclick=()=>{if(confirm("Kembali ke menu? Progres permainan saat ini akan diakhiri.")){$("game").classList.add("hidden");$("result").classList.add("hidden");$("home").classList.remove("hidden")}};
+$("playAgain").onclick=()=>{if(confirm("Main lagi dengan pemain yang sama?"))startGame()};$("backMenu").onclick=()=>{$("result").classList.add("hidden");$("game").classList.add("hidden");$("home").classList.remove("hidden")};$("viewResults").onclick=()=>{let d;try{d=JSON.parse(localStorage.getItem("ularTanggaPAI_hasilTerakhir"))}catch(e){};showInfo("📋 Hasil Permainan",d?`<p><b>${d.name}</b><br>Skor: ${d.score}<br>Benar: ${d.correct}<br>Salah: ${d.wrong}<br>Ketuntasan: ${d.pct}%<br>Predikat: ${d.pred}<br><small>${d.date}</small></p>`:"Belum ada hasil tersimpan.")};
+$("soundBtn").onclick=()=>{soundOn=!soundOn;$("soundBtn").textContent="🔊 Suara: "+(soundOn?"ON":"OFF");if(soundOn)beep()};$("musicBtn").onclick=()=>{musicOn=!musicOn;$("musicBtn").textContent="🎵 Musik: "+(musicOn?"ON":"OFF");toast(musicOn?"Musik latar sederhana diaktifkan.":"Musik latar dimatikan.");if(musicOn){beep(523,.2);musicTimer=setInterval(()=>{if(musicOn)beep(659,.1)},1800)}else{clearInterval(musicTimer)}};
+</script>
+</body>
+</html>
